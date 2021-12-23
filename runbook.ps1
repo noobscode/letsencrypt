@@ -26,25 +26,25 @@ Function LogWrite
    Write-Host $logstring
 }
 
-$LockFile = "C:\Temp\run.lock"
-
 # Loop that runs until we have exclusive write access to $LockFile
 If (!(test-path 'C:\Temp')) {
   New-Item -ItemType Directory -Force -Path C:\Temp | Out-Null
 }
 
-while ($FileStream.CanWrite -eq $false) {
-    if (-not (Test-Path -Path $LockFile)) {
-        Set-Content -Path $LockFile -Value 'Lockfile'
-    }
-    try {
-        $FileStream = [System.IO.File]::Open("C:\Temp\run.lock",'Open','Write')
-    }
-    catch {
-        'Waiting 5 seconds'
-        Start-Sleep -Seconds 5
-    }
+$LockFile = "C:\Temp\run.lock"
+$sleeptime = 60
+
+While(Test-Path -Path $lockfile)
+{
+    Write-Host "! [WARNING] LOCKFILE Found!"
+    Write-Host "This means this task is being used by another process"
+    Write-Host "Wait for file to be deleted/released"
+    Write-Host "Sleeping for $sleeptime seconds (feel free to cancle script)"
+    Start-Sleep $sleeptime -Verbose
 }
+
+# Active LOCKFILE preventing this script from running in another process
+New-item -Path $lockfile
 
 try {
   Import-Module WebAdministration -ErrorAction SilentlyContinue | Out-Null
@@ -255,6 +255,4 @@ Write-Host "Let's Encrypt Log Directory: $LogDir\acme-v02.api.letsencrypt.org"
 Write-Host "Output from this script is logged to: $LogDir\$timestamp-automation_transcript.txt"
 
 # Cleanup lock file
-$FileStream.Close()
-$FileStream.Dispose()
-Remove-Item -Path $LockFile -Force
+Remove-Item $lockfile –Force
