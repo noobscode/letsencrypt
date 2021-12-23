@@ -31,7 +31,7 @@ If (!(test-path 'C:\Temp')) {
   New-Item -ItemType Directory -Force -Path C:\Temp | Out-Null
 }
 
-$LockFile = "C:\Temp\run.lock"
+$LockFile = "C:\Temp\run.lock" | Out-Null
 $sleeptime = 60
 
 While(Test-Path -Path $lockfile)
@@ -255,4 +255,4 @@ Write-Host "Let's Encrypt Log Directory: $LogDir\acme-v02.api.letsencrypt.org"
 Write-Host "Output from this script is logged to: $LogDir\$timestamp-automation_transcript.txt"
 
 # Cleanup lock file
-Remove-Item $lockfile –Force
+Remove-Item $lockfile –Force | Out-Null
