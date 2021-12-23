@@ -26,15 +26,19 @@ Function LogWrite
    Write-Host $logstring
 }
 
-$LockFile = "$ExtractPath\run.lock"
+$LockFile = "C:\Temp\run.lock"
 
 # Loop that runs until we have exclusive write access to $LockFile
+If (!(test-path 'C:\Temp')) {
+  New-Item -ItemType Directory -Force -Path C:\Temp | Out-Null
+}
+
 while ($FileStream.CanWrite -eq $false) {
     if (-not (Test-Path -Path $LockFile)) {
         Set-Content -Path $LockFile -Value 'Lockfile'
     }
     try {
-        $FileStream = [System.IO.File]::Open("$ExtractPath\run.lock",'Open','Write')
+        $FileStream = [System.IO.File]::Open("C:\Temp\run.lock",'Open','Write')
     }
     catch {
         'Waiting 5 seconds'
