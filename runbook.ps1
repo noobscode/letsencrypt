@@ -26,6 +26,22 @@ Function LogWrite
    Write-Host $logstring
 }
 
+$LockFile = "$ExtractPath\run.lock"
+
+# Loop that runs until we have exclusive write access to $LockFile
+while ($FileStream.CanWrite -eq $false) {
+    if (-not (Test-Path -Path $LockFile)) {
+        Set-Content -Path $LockFile -Value 'Lockfile'
+    }
+    try {
+        $FileStream = [System.IO.File]::Open("$ExtractPath\run.lock",'Open','Write')
+    }
+    catch {
+        'Waiting 5 seconds'
+        Start-Sleep -Seconds 5
+    }
+}
+
 try {
   Import-Module WebAdministration -ErrorAction SilentlyContinue | Out-Null
   Import-Module IISAdministration -ErrorAction SilentlyContinue | Out-Null
@@ -233,3 +249,8 @@ $ht.Keys | ForEach-Object {
 LogWrite "+ [INFO] DONE!"
 Write-Host "Let's Encrypt Log Directory: $LogDir\acme-v02.api.letsencrypt.org"
 Write-Host "Output from this script is logged to: $LogDir\$timestamp-automation_transcript.txt"
+
+# Cleanup lock file
+$FileStream.Close()
+$FileStream.Dispose()
+Remove-Item -Path $LockFile -Force
