@@ -27,12 +27,13 @@ Function LogWrite
 }
 
 # Loop that runs until we have exclusive write access to $LockFile
-If (!(test-path 'C:\Temp')) {
+$LockFile = "C:\Temp\run.lock"
+$sleeptime = 60
+
+If (!(Test-Path -PathType Container -Path $LockFile)) {
   New-Item -ItemType Directory -Force -Path C:\Temp | Out-Null
 }
 
-$LockFile = "C:\Temp\run.lock" | Out-Null
-$sleeptime = 60
 
 While(Test-Path -Path $lockfile)
 {
@@ -44,7 +45,7 @@ While(Test-Path -Path $lockfile)
 }
 
 # Active LOCKFILE preventing this script from running in another process
-New-item -Path $lockfile
+New-item -Path $lockfile | Out-Null
 
 try {
   Import-Module WebAdministration -ErrorAction SilentlyContinue | Out-Null
