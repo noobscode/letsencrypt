@@ -39,7 +39,7 @@ While(Test-Path -Path $lockfile)
     Write-Host "! [WARNING] LOCKFILE Found!"
     Write-Host "This means this task is being used by another process"
     Write-Host "Wait for file to be deleted/released"
-    Write-Host "Sleeping for $sleeptime seconds (feel free to cancle script)"
+    Write-Host "Sleeping for $sleeptime seconds (feel free to cancel script)"
     Start-Sleep $sleeptime -Verbose
 }
 
