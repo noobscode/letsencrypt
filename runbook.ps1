@@ -169,7 +169,7 @@ foreach ($Site in $BrokenSites) {
 
       # Request new ssl certificate
       LogWrite "+ [INFO] Requesting new certificate for $Site"
-      Start-Process -FilePath "$ExtractPath\wacs.exe" -WorkingDirectory "$ExtractPath" -ArgumentList "--source iis", "--commonname $Site", "--host $Site", "--siteid $SiteId", "--verbose" -Wait
+      Start-Process -FilePath "$ExtractPath\wacs.exe" -WorkingDirectory "$ExtractPath" -ArgumentList "--source iis", "--installation iis", "--commonname $Site", "--host $Site", "--siteid $SiteId", "--verbose" -Wait
 
       # Create New SSL Binding
       LogWrite "+ [INFO] Collecting the new Thumbprint for the newly generated certificate"
