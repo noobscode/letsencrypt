@@ -11,9 +11,9 @@
 
 # Do not change these variables unless you know what youre doing!
 $Package = "https://github.com/win-acme/win-acme/releases/download/v2.1.20.1/win-acme.v2.1.20.1185.x64.pluggable.zip"
-$ExtractPath = "C:\Tools\letsencrypt\letsencrypt_automation\"
+$ExtractPath = "C:\Tools\letsencrypt_automation\letsencrypt_automation\"
 $DownloadDir = "C:\temp\letsencrypt_automation\"
-$LogDir = "C:\Tools\letsencrypt\letsencrypt_automation_logs"
+$LogDir = "C:\Tools\letsencrypt_automation\letsencrypt_automation_logs"
 
 # Get the time and date for logging purposes
 $timestamp = Get-Date -Format FileDateTime
@@ -95,7 +95,7 @@ LogWrite "+ [INFO] Update Lets Encrypt Configuration to fit our needs"
 $configFiles = Get-ChildItem -File -Path "$ExtractPath\*" -include settings_default.json
 foreach ($file in $configFiles) { 
   (Get-Content $file.PSPath) | Foreach-Object { 
-    $_ -replace '"LogPath": null,', '"LogPath": "C:\\Tools\\letsencrypt\\letsencrypt_automation_logs",' 
+    $_ -replace '"LogPath": null,', '"LogPath": "C:\\Tools\\letsencrypt_automation\\letsencrypt_automation_logs",' 
   } | Set-Content $file.PSPath
 }
 
